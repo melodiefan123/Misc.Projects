@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Noso YC S25 Lock Screen Countdown</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Noso Blueprint Grid Pattern */
+    .bg-grid-pattern {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+
+    /* iOS Safe Area Support */
+    .pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top)); }
+    .pb-safe { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
+
+    /* Custom Scrollbar for Tasks */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 bg-grid-pattern min-h-screen min-h-[100dvh] flex items-center justify-center sm:p-4 text-slate-900 font-sans antialiased overflow-hidden">
+
+  <!-- Responsive Device Frame -->
+  <div class="w-full h-full min-h-[100dvh] sm:min-h-0 sm:h-[840px] max-w-none sm:max-w-[410px] bg-white sm:bg-slate-950 sm:p-3.5 sm:rounded-[48px] sm:shadow-2xl sm:border-4 sm:border-slate-800 flex flex-col justify-between relative overflow-hidden">
+    
+    <!-- Phone Display Inner Canvas -->
+    <div class="w-full h-full min-h-[100dvh] sm:min-h-0 bg-white sm:rounded-[38px] flex flex-col justify-between overflow-hidden relative border-0 sm:border border-slate-200">
+      
+      <!-- Top Status Bar & Camera Island -->
+      <div class="pt-safe px-5 pb-2 flex justify-between items-center text-xs font-semibold text-slate-800 bg-white z-20 select-none">
+        <span id="currentTime" class="font-mono text-xs font-bold text-slate-900">09:41</span>
+        
+        <!-- Sensor Notch (Desktop view) -->
+        <div class="hidden sm:flex w-20 h-4 bg-slate-950 rounded-full items-center justify-center">
+          <div class="w-2 h-2 rounded-full bg-blue-600 mr-1.5"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-slate-800"></div>
+        </div>
+
+        <div class="flex items-center space-x-1.5">
+          <span class="text-[10px] font-mono font-bold text-slate-600">5G</span>
+          <svg class="w-3.5 h-3.5 fill-current text-slate-800" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.2 19.57 10.55 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+        </div>
+      </div>
+
+      <!-- Main Lock Screen Content -->
+      <div class="px-4 py-2 flex-1 flex flex-col justify-between overflow-hidden">
+        
+        <!-- Brand Header & 3-Section Header Bar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] font-mono tracking-widest uppercase bg-slate-950 text-white px-2 py-0.5 rounded-md font-bold">NOSO</span>
+              <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase font-semibold">YC S25 BUILD</span>
+            </div>
+            <!-- Lock Indicator -->
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+
+          <!-- 3-Section Header Bar: COUNTDOWN | [DAYS LEFT] | # OF TASKS -->
+          <div class="grid grid-cols-3 gap-1 bg-slate-950 text-white rounded-xl p-2.5 text-center shadow-md border border-slate-800">
+            <div class="flex flex-col justify-center border-r border-slate-800 pr-1">
+              <span class="text-[8px] sm:text-[9px] font-mono text-slate-400 tracking-wider">SECTION 01</span>
+              <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide">COUNTDOWN</span>
+            </div>
+            <div class="flex flex-col justify-center border-r border-slate-800 px-1">
+              <span class="text-[8px] sm:text-[9px] font-mono text-slate-400 tracking-wider">SECTION 02</span>
+              <span id="headerDaysLeft" class="text-[11px] sm:text-xs font-black text-blue-400">34 DAYS LEFT</span>
+            </div>
+            <div class="flex flex-col justify-center pl-1">
+              <span class="text-[8px] sm:text-[9px] font-mono text-slate-400 tracking-wider">SECTION 03</span>
+              <span id="headerTasksLeft" class="text-[11px] sm:text-xs font-black text-emerald-400">35 TASKS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Deadline Gauge Card -->
+        <div class="my-2 bg-slate-50 rounded-2xl p-3.5 border border-slate-200">
+          <div class="flex justify-between items-baseline mb-1">
+            <span class="text-[10px] font-mono font-bold text-slate-500 uppercase">Target Deadline</span>
+            <span class="text-[10px] font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">DEC 15, 2026</span>
+          </div>
+          
+          <div class="flex items-baseline space-x-2 my-0.5">
+            <span id="bigDaysNum" class="text-4xl sm:text-5xl font-black tracking-tight text-slate-950">34</span>
+            <span class="text-sm sm:text-base font-bold text-slate-600">Days Remaining</span>
+          </div>
+
+          <!-- Completion Progress Bar -->
+          <div class="mt-2">
+            <div class="flex justify-between text-[10px] font-mono font-bold text-slate-500 mb-1">
+              <span>PROGRESS</span>
+              <span id="progressPercent">0% COMPLETE</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrollable Task Checklist (Founding Engineer Focus) -->
+        <div class="flex-1 min-h-0 flex flex-col bg-white rounded-2xl border border-slate-200 p-3 my-1">
+          <div class="flex justify-between items-center mb-2 pb-1 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-800">Founding Eng Checklist (5-6 hrs/day)</span>
+            <span class="text-[10px] font-mono text-slate-400">NOV 11 - DEC 15</span>
+          </div>
+
+          <div id="taskList" class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar text-xs">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Noso Status Footer Pill -->
+        <div class="bg-slate-950 text-white rounded-xl p-2.5 flex items-center justify-between text-xs border border-slate-800 mt-1">
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+            <span class="font-mono text-[11px] font-semibold">High-Bar Protocol</span>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400">Shipping Production AI</span>
+        </div>
+
+      </div>
+
+      <!-- Home Indicator Swipe Bar -->
+      <div class="pb-safe pt-1 flex justify-center bg-white">
+        <div class="w-28 h-1 bg-slate-900 rounded-full"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const roadmapTasks = [
+      { day: "NOV 11", phase: "Phase 1", task: "Repo setup, Python backend & React Native scaffolding" },
+      { day: "NOV 12", phase: "Phase 1", task: "Database schema design & enterprise customer data models" },
+      { day: "NOV 13", phase: "Phase 1", task: "Mock data pipeline setup for HVAC, plumbing & electrical estimates" },
+      { day: "NOV 14", phase: "Phase 1", task: "REST API endpoints for estimate retrieval & field dispatch triggers" },
+      { day: "NOV 15", phase: "Phase 1", task: "Authentication flow, user session management & secure API routing" },
+      { day: "NOV 16", phase: "Phase 1", task: "Unit testing production-quality backend services & API endpoints" },
+      { day: "NOV 17", phase: "Phase 1", task: "Phase 1 architectural cleanup & end-to-end data validation" },
+
+      { day: "NOV 18", phase: "Phase 2", task: "Integration of LLM chains for automated estimate follow-ups" },
+      { day: "NOV 19", phase: "Phase 2", task: "Data collection & prompt engineering for trade-specific messaging" },
+      { day: "NOV 20", phase: "Phase 2", task: "Customer response parsing, sentiment evaluation & NLP classification" },
+      { day: "NOV 21", phase: "Phase 2", task: "Automated estimate conversion trigger logic & quote acceptance" },
+      { day: "NOV 22", phase: "Phase 2", task: "Escalation logic for human dispatch takeover & edge-case safety" },
+      { day: "NOV 23", phase: "Phase 2", task: "Enterprise API integration hooks for CRM & dispatch systems" },
+      { day: "NOV 24", phase: "Phase 2", task: "Test and validate model performance for response reliability" },
+
+      { day: "NOV 25", phase: "Phase 3", task: "React Native mobile UI layout & field tech estimate views" },
+      { day: "NOV 26", phase: "Phase 3", task: "Mobile status filter views & real-time notification sync" },
+      { day: "NOV 27", phase: "Phase 3", task: "Back-office dispatch dashboard layout & UI component architecture" },
+      { day: "NOV 28", phase: "Phase 3", task: "Real-time conversion metrics widgets (converted revenue, response rates)" },
+      { day: "NOV 29", phase: "Phase 3", task: "Needs Review queue for escalated customer inquiries" },
+      { day: "NOV 30", phase: "Phase 3", task: "Full-stack UI polish across mobile and back-office interfaces" },
+      { day: "DEC 01", phase: "Phase 3", task: "Phase 3 cross-platform design review & mobile responsiveness testing" },
+
+      { day: "DEC 02", phase: "Phase 4", task: "Data cleaning pipeline using Pandas/NumPy for large estimate datasets" },
+      { day: "DEC 03", phase: "Phase 4", task: "Model optimization for response efficiency & low-latency inference" },
+      { day: "DEC 04", phase: "Phase 4", task: "Automated discount/financing offer logic inside follow-up chains" },
+      { day: "DEC 05", phase: "Phase 4", task: "Conversation history logging & audit trail visualization" },
+      { day: "DEC 06", phase: "Phase 4", task: "Mock customer simulator for stress-testing LLM automation at scale" },
+      { day: "DEC 07", phase: "Phase 4", task: "Fine-tuning prompts for trade edge cases (parts approval, scheduling)" },
+      { day: "DEC 08", phase: "Phase 4", task: "Phase 4 end-to-end AI automation validation & error handling" },
+
+      { day: "DEC 09", phase: "Phase 5", task: "Full-stack bug hunting, performance audit & production hardening" },
+      { day: "DEC 10", phase: "Phase 5", task: "Production build deployment on cloud infrastructure (AWS/GCP)" },
+      { day: "DEC 11", phase: "Phase 5", task: "Database migration scripts & production environment validation" },
+      { day: "DEC 12", phase: "Phase 5", task: "Technical README, architecture diagram & data flow documentation" },
+      { day: "DEC 13", phase: "Phase 5", task: "High-impact app walkthrough video showcasing React Native UI & AI engine" },
+      { day: "DEC 14", phase: "Phase 5", task: "Codebase cleanup, linting & repository presentation polish" },
+      { day: "DEC 15", phase: "Phase 5", task: "Official application submission & ship production build!" }
+    ];
+
+    let completedIndices = [];
+    try {
+      completedIndices = JSON.parse(localStorage.getItem('noso_completed_tasks') || '[0]');
+    } catch(e) {
+      completedIndices = [0];
+    }
+
+    function updateCalculations() {
+      const targetDate = new Date("2026-12-15T23:59:59");
+      const currentDate = new Date();
+      const diffTime = targetDate - currentDate;
+      const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+      document.getElementById('headerDaysLeft').textContent = `${diffDays} DAYS LEFT`;
+      document.getElementById('bigDaysNum').textContent = diffDays;
+
+      const totalTasks = roadmapTasks.length;
+      const completedCount = completedIndices.length;
+      const remainingTasks = totalTasks - completedCount;
+      const percent = Math.round((completedCount / totalTasks) * 100);
+
+      document.getElementById('headerTasksLeft').textContent = `${remainingTasks} TASKS`;
+      document.getElementById('progressPercent').textContent = `${percent}% COMPLETE`;
+      document.getElementById('progressBar').style.width = `${percent}%`;
+    }
+
+    function renderTasks() {
+      const taskListEl = document.getElementById('taskList');
+      taskListEl.innerHTML = '';
+
+      roadmapTasks.forEach((item, index) => {
+        const isChecked = completedIndices.includes(index);
+        
+        const taskRow = document.createElement('label');
+        taskRow.className = `flex items-start space-x-2.5 p-2 rounded-lg cursor-pointer transition-colors border ${
+          isChecked ? 'bg-slate-50 border-slate-200 text-slate-400' : 'bg-white border-slate-100 text-slate-800 hover:border-slate-300'
+        }`;
+
+        taskRow.innerHTML = `
+          <input type="checkbox" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <span class="font-mono text-[10px] font-bold ${isChecked ? 'text-slate-400' : 'text-blue-600'}">${item.day}</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-500">${item.phase}</span>
+            </div>
+            <p class="text-[11px] leading-tight font-medium ${isChecked ? 'line-through' : ''}">${item.task}</p>
+          </div>
+        `;
+
+        const checkbox = taskRow.querySelector('input');
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            if (!completedIndices.includes(index)) completedIndices.push(index);
+          } else {
+            completedIndices = completedIndices.filter(i => i !== index);
+          }
+          try {
+            localStorage.setItem('noso_completed_tasks', JSON.stringify(completedIndices));
+          } catch(e) {}
+          renderTasks();
+          updateCalculations();
+        });
+
+        taskListEl.appendChild(taskRow);
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('currentTime').textContent = `${hrs}:${mins}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    renderTasks();
+    updateCalculations();
+  </script>
+</body>
+</html>
